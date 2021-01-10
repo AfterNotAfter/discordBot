@@ -43,10 +43,12 @@ class Webserver():
             except:
                 return response.redirect("discord")
             
-        @app.route('/discordinvite')
+        @app.route('/discord')
         async def route_discord(request):
             return response.redirect(f"{config.discord_invite}")
         
+
+
         @app.route('/tokenlogin',methods = ['GET','POST'])
         async def tokenlogin(request):
             try:
@@ -65,7 +67,7 @@ class Webserver():
                 ndata.update({"email": userdata['email']})
                 encoded_data=jwt.encode(ndata,config.site_url)
                 ndata.update({"updatetime": datetime.datetime.utcnow()})
-                dbdoc = self.db.collection(f"users").document(f"{id}")
+                dbdoc = self.db.collection(f"users").document(f"{data['discordId']}")
                 dbdoc.set(ndata)
                 async with websockets.connect("ws://localhost:3000") as websocket:
                     await websocket.send(encoded_data)
