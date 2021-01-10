@@ -22,3 +22,8 @@ toml==0.10.0
 typed-ast==1.4.1
 websockets==8.1
 yarl==1.4.2
+arsenic
+sanic
+firebase_admin
+sanic_session
+jinja2
