@@ -15,7 +15,7 @@ with open("logging.json") as f:
 
 
 class DiscordBot(commands.Bot):
-    extension_list = ["extensions.admin","extensions.websocket","extensions.events"]
+    extension_list = ["extensions.admin","extensions.websocket","extensions.events","extensions.moderator","extensions.user"]
 
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user}")
