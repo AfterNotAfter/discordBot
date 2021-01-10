@@ -7,7 +7,7 @@ import os
 import platform
 import jwt
 import config
-class ApiSocket(commands.Cog):
+class ApiSocketCog(commands.Cog):
     def __init__(self, bot):
         
         self.bot=bot
@@ -49,5 +49,4 @@ class ApiSocket(commands.Cog):
                     await websocket.send(data)
 
 def setup(bot):
-    cog = ApiSocket(bot)
-    bot.add_cog(cog)
+    bot.add_cog(ApiSocketCog(bot))

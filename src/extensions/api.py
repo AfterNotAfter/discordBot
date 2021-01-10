@@ -19,7 +19,7 @@ import jwt
 class Webserver():
     def __init__(self):
         #FireBase
-        cred = credentials.Certificate('firebasecert.json')
+        cred = credentials.Certificate('./cert/firebasecert.json')
         firebase_admin.initialize_app(cred)
 
         self.db = firestore.client()
