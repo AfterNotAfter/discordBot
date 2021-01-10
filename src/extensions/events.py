@@ -6,10 +6,10 @@ import asyncio
 import sys
 import config
 
-class Events(commands.Cog):
+class EventsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+        
     @commands.Cog.listener('on_member_join')
     async def member_join(self, member: discord.Member):
         timestamp = datetime.datetime.utcnow()
@@ -22,14 +22,14 @@ class Events(commands.Cog):
         hi_embed = discord.Embed(color=0x00f1ff, title=f'{member}님이 들어오셨어요!', description=f'`{member.guild}`에 오신걸 환영합니다!\n',
                     timestamp=timestamp)
         hi_embed.set_thumbnail(url=f"{str(member.avatar_url)}")
-        hi_embed.add_field(name='유저태그', value=f'{member}', inline=True)
-        hi_embed.add_field(name='계정 생성일', value=f'{str(member.created_at + KST)[:-10]}', inline=True)
-        
+        hi_embed.add_field(name='유저태그', value=f'{member}', inline=False)
+        hi_embed.add_field(name='계정 생성일', value=f'{str(member.created_at + KST)[:-10]}', inline=False)
+        hi_embed.add_field(name='**안내**', value=f'개인 메세지(DM)으로 전송된 인증링크를 통해 인증해주세요!', inline=False)
         hi_embed.set_footer(text="꼭 #신입공지를 읽어주세요!")
         await hello_channel.send(member.mention, embed=hi_embed)
         secret_embed = discord.Embed(
             color=0x7be53b,
-            title="{member}님의 고유 인증 링크",
+            title=f"{member}님의 고유 인증 링크",
             description=f"[링크](https://{config.site_url}/login?discordId={member.id})",
             timestamp=timestamp
             )
@@ -37,9 +37,24 @@ class Events(commands.Cog):
             await member.send(embed=secret_embed)
         except:
             await hello_channel.send('이 유저는 개인DM을 막아두어서 유저 인증 고유 링크를 보내지 못하였습니다.\n {admin_role.mention} 분들 께서 고유링크를 생성해 전달해 주세요!')
+
     @commands.Cog.listener('on_member_remove')
-    async def member_leave(self,member: discord.Member)
+    async def member_leave(self, member: discord.Member):
+        KST = datetime.timedelta(hours=9)
+        timestamp = datetime.datetime.utcnow()
+        hello_channel = self.bot.get_channel(config.discord_new_user_channel)
+
+        bye_embed = discord.Embed(color=0xFF69B4, title=f'{member}님이 나가셨어요..',
+                            description=f'서버: `{member.guild}`',
+                            timestamp=timestamp)
+        bye_embed.add_field(name='유저태그', value=f'{member}', inline=True)
+        bye_embed.set_thumbnail(url=f"{str(member.avatar_url)}")
+        bye_embed.add_field(name='계정 생성일', value=f'{str(member.created_at + KST)[:-10]}', inline=False)
+        bye_embed.add_field(name='서버 참가일', value=f'{str(member.joined_at + KST)[:-10]}', inline=False)
+
+        await hello_channel.send(embed=bye_embed)
+        
 
 
 def setup(bot):
-    bot.add_cog(Events(bot))
+    bot.add_cog(EventsCog(bot))
