@@ -72,6 +72,7 @@ class Webserver():
                 async with websockets.connect("ws://localhost:3000") as websocket:
                     await websocket.send(encoded_data)
                     recv = await websocket.recv()
+                    print(recv)
                     if recv == "OK":
                         return response.html("""
                         <script>
@@ -84,11 +85,11 @@ class Webserver():
                         
                         """)
                     else:
-                        return response.redirect("/")
+                        return response.text(f"ERROR: api.py -> Response Not OK\n{recv}")
             except Exception as e:
                 return response.text("ERROR: "+str(e))
         ssl_context ={"cert":"./cert/fullchain.pem",'key': "./cert/privkey.pem"}
-        app.run(host='0.0.0.0', port=443, ssl=ssl_context, debug=False)
+        app.run(host='0.0.0.0', port=config.site_port, ssl=ssl_context, debug=False)
 
         
         

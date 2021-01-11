@@ -25,7 +25,7 @@ async def async_screenshot(url):
     service = arsenic.services.Chromedriver()
     browser = arsenic.browsers.Chrome()
     browser.capabilities = {
-        "goog:chromeOptions": {"args": ["--headless", "--disable-gpu"]}
+        "goog:chromeOptions": {"args": ["--headless", "--disable-gpu","--no-sandbox","--disable-dev-shm-usage"]}
     }
     #service = arsenic.services.Geckodriver()
     #browser = arsenic.browsers.Firefox()

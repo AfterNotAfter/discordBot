@@ -27,3 +27,5 @@ sanic
 firebase_admin
 sanic_session
 jinja2
+PyJwt
+selenium

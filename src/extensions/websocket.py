@@ -8,6 +8,7 @@ import platform
 import jwt
 import config
 import utils
+import traceback
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -64,12 +65,13 @@ class ApiSocketCog(commands.Cog):
             else:
                 print(data)
                 try:
-                    data = jwt.decode(data, config.site_url)
+                    data = jwt.decode(data, config.site_url,algorithms="HS256")
                     await websocket.send("OK")
                     print(data)
                     await self.send_message(data)
                 except:
-                    await websocket.send(data)
+                    tb=traceback.format_exc()
+                    await websocket.send(tb)
 
 def setup(bot):
     bot.add_cog(ApiSocketCog(bot))
