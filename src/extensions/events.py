@@ -5,9 +5,11 @@ import datetime
 import asyncio
 import sys
 import config
+import importlib
 
 class EventsCog(commands.Cog):
     def __init__(self, bot):
+        importlib.reload(config)
         self.bot = bot
         
     @commands.Cog.listener('on_member_join')
@@ -36,7 +38,7 @@ class EventsCog(commands.Cog):
         try:
             await member.send(embed=secret_embed)
         except:
-            await hello_channel.send('이 유저는 개인DM을 막아두어서 유저 인증 고유 링크를 보내지 못하였습니다.\n {admin_role.mention} 분들 께서 고유링크를 생성해 전달해 주세요!')
+            await hello_channel.send(f'이 유저는 개인DM을 막아두어서 유저 인증 고유 링크를 보내지 못하였습니다.\n {member.mention}님은 DM을 열어주시고, 관리자 분들은 `a.인증링크 @유저멘션` 명령어를 통해 다시 DM 전송을 시도해 주세요')
 
     @commands.Cog.listener('on_member_remove')
     async def member_leave(self, member: discord.Member):

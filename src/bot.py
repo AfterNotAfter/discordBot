@@ -5,7 +5,7 @@ import os
 import config
 import discord
 from discord.ext import commands
-
+import importlib
 import extensions.api
 from multiprocessing import Process, Queue
 with open("logging.json") as f:
@@ -31,6 +31,7 @@ class DiscordBot(commands.Bot):
             self.load_extension(ext)
 
 if __name__ == "__main__":
+    
     th1 = Process(target=extensions.api.Webserver)
     th1.start()
     intents = discord.Intents.all()

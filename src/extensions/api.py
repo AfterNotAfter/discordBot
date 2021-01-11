@@ -16,8 +16,10 @@ from firebase_admin import firestore
 #Config
 import config
 import jwt
+import importlib
 class Webserver():
     def __init__(self):
+        importlib.reload(config)
         #FireBase
         cred = credentials.Certificate('./cert/firebasecert.json')
         firebase_admin.initialize_app(cred)

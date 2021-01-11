@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-
+import importlib
 import logging
 import psutil
 import discord
@@ -9,11 +9,12 @@ from discord.ext import commands
 import traceback
 from interface import is_confirmed
 
-
 class AdminCog(commands.Cog):
     def __init__(self, bot):
+        importlib.reload(config)
+        
         self.bot = bot
-
+        
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.author) or ctx.author.id in config.moderator_ids
 
@@ -37,7 +38,7 @@ class AdminCog(commands.Cog):
         )
 
         await ctx.send(
-            f"**Server Uptime** {server_uptime}\n" + f"**Bot Uptime** {python_uptime}"
+            f"**Bot Uptime** {python_uptime}"
         )
 
     @commands.command(name="shutdown", brief="봇 종료")
@@ -85,9 +86,6 @@ class AdminCog(commands.Cog):
         embed=discord.Embed(title='**💬 AWAIT**',  description=evalout)
         await ctx.send(embed=embed)
 
-    @commands.command(name="reacttest")
-    async def reacttest(self, ctx, msg: discord.Message):
-        await msg.add_reaction("👍")
     
     @commands.command(brief="역할 일괄 지급")
     async def fix(self, ctx, msg_channel: discord.TextChannel, emoji_msg: int, role: discord.Role):

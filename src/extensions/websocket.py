@@ -12,9 +12,10 @@ import traceback
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import importlib
 class ApiSocketCog(commands.Cog):
     def __init__(self, bot):
-        
+        importlib.reload(config)
         self.bot=bot
         asyncio.get_event_loop().create_task(self.start_ws())
         self.logger = bot.logger
