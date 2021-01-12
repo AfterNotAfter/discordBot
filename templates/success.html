@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"
+    />
+    <link rel="shortcut icon" href="assets/favicon.ico" />
+    <title>가입 신청 성공!</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+  </head>
+  <body>
+    <style>
+      @font-face {
+        font-family: "MaplestoryOTFLight";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFLight.woff")
+          format("woff");
+        font-weight: normal;
+        font-style: normal;
+      }
+      body,
+      input,
+      select,
+      textarea,
+      button {
+        color: #585858;
+        /*font-family: "Source Sans Pro", Helvetica, sans-serif;*/
+        font-family: "MaplestoryOTFLight", Helvetica, sans-serif;
+        font-size: 16pt;
+        font-weight: 300;
+        line-height: 1.75;
+      }
+      body {
+        background-color: #7bd0c1;
+      }
+    </style>
+    <script>
+      swal({
+        title: "가입 신청 완료!",
+        text:
+          "접수가 완료되었습니다!\n서버 참가자의 투표로 승인 여부가 결정됩니다!\n승인까지 기다려주세요!",
+        icon: "success",
+        buttons: { confirm: "서버로 가기" },
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+      }).then((YES) => {
+        window.location.href = window.location.origin;
+      });
+    </script>
+  </body>
+</html>

@@ -21,8 +21,11 @@ class Webserver():
     def __init__(self):
         importlib.reload(config)
         #FireBase
-        cred = credentials.Certificate('./cert/firebasecert.json')
-        firebase_admin.initialize_app(cred)
+        try:
+            app = firebase_admin.get_app()
+        except ValueError as e:
+            cred = credentials.Certificate('./cert/firebasecert.json')
+            firebase_admin.initialize_app(cred)
 
         self.db = firestore.client()
         app = Sanic (__name__)
@@ -39,17 +42,51 @@ class Webserver():
         async def login(request):
             try:
                 discordId = request.args['discordId'][0]
-                rdict={"cert": config.firebase_web_cert, "storeconfig": config,"discordId":discordId}
+                rdict={"cert": config.firebase_web_cert,"discordId":discordId}
                 template = self.templateEnv.get_template('login.twitter.html')
                 return response.html(template.render(rdict))
             except:
-                return response.redirect("discord")
+                return response.redirect("/")
             
         @app.route('/discord')
         async def route_discord(request):
             return response.redirect(f"{config.discord_invite}")
         
-
+        @app.route('/introduce')
+        async def introduce(request):
+            try:
+                discordId = request.args['discordId'][0]
+                rdict={"cert": config.firebase_web_cert, "discordId":discordId}
+                template = self.templateEnv.get_template('introduce.html')
+                return response.html(template.render(rdict))
+            except Exception as e:
+                return response.text("ERROR: "+str(e))
+        @app.route("/proceed_register",methods = ['POST'])
+        async def proceed_register(request):
+            try:
+                data = request.form
+                discordId = data['discordId'][0]
+                dbdoc = self.db.collection(f"users").document(f"{discordId}")
+                doc=dbdoc.get()
+                ndata = doc.to_dict()
+                ndata.pop("updatetime")                
+                append_data = {"introduce": {"nickname": data['nickname'][0], "gender": data['gender'][0], "tend": data['tend'][0], "age": data['age'][0]}}
+                ndata.update(append_data)
+                dbdoc.update(append_data)
+                
+                async with websockets.connect("ws://localhost:3000") as websocket:
+                    
+                    encoded_data=jwt.encode(ndata,config.site_url)
+                    await websocket.send(encoded_data)
+                    recv = await websocket.recv()
+                    print(recv)
+                    if recv == "OK":
+                        template = self.templateEnv.get_template('success.html')
+                        return response.html(template.render())
+                        
+            except Exception as e:
+                return response.text("ERROR: "+str(e))
+            
 
         @app.route('/tokenlogin',methods = ['GET','POST'])
         async def tokenlogin(request):
@@ -67,27 +104,10 @@ class Webserver():
                 ndata.update({"displayname":userdata['displayName']})
                 ndata.update({"photoURL": userdata['photoURL']})
                 ndata.update({"email": userdata['email']})
-                encoded_data=jwt.encode(ndata,config.site_url)
                 ndata.update({"updatetime": datetime.datetime.utcnow()})
-                dbdoc = self.db.collection(f"users").document(f"{data['discordId']}")
+                dbdoc = self.db.collection(f"users").document(f"{data['discordId'][0]}")
                 dbdoc.set(ndata)
-                async with websockets.connect("ws://localhost:3000") as websocket:
-                    await websocket.send(encoded_data)
-                    recv = await websocket.recv()
-                    print(recv)
-                    if recv == "OK":
-                        return response.html("""
-                        <script>
-                        window.close()
-                        self.close()
-                        window.open('','_self').close();
-                        window.location.href = window.location.origin + "/"
-                        </script>
-                        
-                        
-                        """)
-                    else:
-                        return response.text(f"ERROR: api.py -> Response Not OK\n{recv}")
+                return response.redirect(f"/introduce?discordId={data['discordId'][0]}")
             except Exception as e:
                 return response.text("ERROR: "+str(e))
         ssl_context ={"cert":"./cert/fullchain.pem",'key': "./cert/privkey.pem"}

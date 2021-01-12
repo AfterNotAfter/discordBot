@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"
+    />
+    <title>자기소개: {{store_title}}</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+    <meta property="og:image" content="{{store_logo}}" />
+    <meta property="og:description" content="{{store_description}}" />
+    <meta property="og:title" content="자기소개: {{store_title}}" />
+  </head>
+  <body>
+    <style>
+      @font-face {
+        font-family: "MaplestoryOTFLight";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFLight.woff")
+          format("woff");
+        font-weight: normal;
+        font-style: normal;
+      }
+      body,
+      input,
+      select,
+      textarea,
+      button {
+        color: #585858;
+        /*font-family: "Source Sans Pro", Helvetica, sans-serif;*/
+        font-family: "MaplestoryOTFLight", Helvetica, sans-serif;
+        font-size: 16pt;
+        font-weight: 300;
+        line-height: 1.75;
+      }
+      body {
+        background-color: #7bd0c1;
+      }
+    </style>
+    <script>
+      function getParam(sname) {
+        var params = location.search.substr(location.search.indexOf("?") + 1);
+
+        var sval = "";
+
+        params = params.split("&");
+
+        for (var i = 0; i < params.length; i++) {
+          temp = params[i].split("=");
+
+          if ([temp[0]] == sname) {
+            sval = temp[1];
+          }
+        }
+
+        return sval;
+      }
+      function post_to_url(path, params, method) {
+        method = method || "post";
+
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for (var key in params) {
+          var hiddenField = document.createElement("input");
+          hiddenField.setAttribute("type", "hidden");
+          hiddenField.setAttribute("name", key);
+          hiddenField.setAttribute("value", params[key]);
+
+          form.appendChild(hiddenField);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+      swal({
+        title: "자기소개",
+        text:
+          "트위터 계정을 성공적으로 인증하였습니다!\n다음 버튼을 눌러 자기소개를 입력해주세요!\n꼭 자기소개를 제출하셔야 가입심사가 시작됩니다.",
+        icon: "info",
+        buttons: { confirm: "다음" },
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+      }).then((YES) => {
+        swal({
+          title: "닉네임",
+          icon: "info",
+          text: "디스코드 방 내에서 사용할 닉네임을 입력해 주세요!",
+          closeOnClickOutside: false,
+          closeOnEsc: false,
+          buttons: { confirm: "다음" },
+          content: {
+            element: "input",
+            attributes: {
+              placeholder: "홍길동",
+              type: "text",
+            },
+          },
+        }).then((nickname) => {
+          console.log(nickname);
+          swal({
+            title: "성별",
+            icon: "info",
+            text: "본인의 성별을 골라주세요",
+            closeOnClickOutside: false,
+            closeOnEsc: false,
+            buttons: {
+              male: {
+                text: "남성",
+                value: "멜",
+              },
+              female: {
+                text: "여성",
+                value: "펨",
+              },
+              etc: {
+                text: "기타",
+                value: "etc",
+              },
+            },
+          }).then((gender) => {
+            console.log(gender);
+            swal({
+              title: "성향",
+              icon: "info",
+              text: "본인의 성향을 골라주세요",
+              closeOnClickOutside: false,
+              closeOnEsc: false,
+              buttons: {
+                dom: {
+                  text: "돔",
+                  value: "돔",
+                },
+                sub: {
+                  text: "섭",
+                  value: "섭",
+                },
+                switch: {
+                  text: "스위치",
+                  value: "스위치",
+                },
+              },
+            }).then((tend) => {
+              console.log(tend);
+              swal({
+                title: "연령대",
+                icon: "info",
+                text: "본인의 연령대를 골라주세요",
+                closeOnClickOutside: false,
+                closeOnEsc: false,
+                buttons: {
+                  adult: {
+                    text: "성인",
+                    value: "성인",
+                  },
+                  teen: {
+                    text: "미성년자",
+                    value: "미자",
+                  },
+                },
+              }).then((age) => {
+                console.log(age);
+                const data = {
+                  discordId: getParam("discordId"),
+                  nickname: nickname,
+                  gender: gender,
+                  tend: tend,
+                  age: age,
+                };
+                console.log(data);
+                post_to_url(window.location.origin + "/proceed_register", data);
+              });
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
