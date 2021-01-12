@@ -68,6 +68,8 @@ class EventsCog(commands.Cog):
         if is_thumbsup or is_x:
             if channel.id == config.discord_verify_channel:
                 member = message.mentions[0]
+                if payload.member == message.guild.me:
+                    return
                 reactions = message.reactions
                 thumbsup_reaction = reactions[0]
                 x_reaction = reactions[1]
