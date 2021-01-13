@@ -82,7 +82,7 @@
       swal({
         title: "자기소개",
         text:
-          "트위터 계정을 성공적으로 인증하였습니다!\n다음 버튼을 눌러 자기소개를 입력해주세요!\n꼭 자기소개를 제출하셔야 가입심사가 시작됩니다.",
+          "트위터 계정을 성공적으로 인증하였습니다!\n다음 버튼을 눌러 자기소개를 입력해주세요!\n꼭 자기소개를 제출하셔야 계속 진행하실수 있어요!",
         icon: "info",
         buttons: { confirm: "다음" },
         closeOnClickOutside: false,
@@ -113,11 +113,11 @@
             buttons: {
               male: {
                 text: "남성",
-                value: "멜",
+                value: "남자",
               },
               female: {
                 text: "여성",
-                value: "펨",
+                value: "여자",
               },
               etc: {
                 text: "기타",
@@ -166,6 +166,7 @@
                 },
               }).then((age) => {
                 console.log(age);
+                const mode = getParam("mode");
                 const data = {
                   discordId: getParam("discordId"),
                   nickname: nickname,
@@ -174,7 +175,10 @@
                   age: age,
                 };
                 console.log(data);
-                post_to_url(window.location.origin + "/proceed_register", data);
+                post_to_url(
+                  window.location.origin + "/proceed_register?mode=" + mode,
+                  data
+                );
               });
             });
           });
