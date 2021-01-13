@@ -13,15 +13,20 @@
       content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
     />
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-app.js"></script>
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
 				 https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth__ko.js"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css"
+    />
 
     <script>
-      localStorage.setItem("discordId", "{{discordId}}");
       // Your web app's Firebase configuration
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       var firebaseConfig = {
@@ -101,13 +106,20 @@
         //웹페이지가 로드가 완료 후에 해당 함수를 실행합니다.
         console.log("Jquery Ready");
       });
-      firebase
-        .auth()
-        .getRedirectResult()
-        .then(function (result) {
-          if (result.credential) {
-            // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-            // You can use these server side with your app's credentials to access the Twitter API.
+      /*
+      // Initialize the FirebaseUI Widget using Firebase.
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+      Options = {
+        signInOptions: [
+          // List of OAuth providers supported.
+          firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+        ],
+        callbacks: {
+          signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+            console.log(authResult);
+            console.log(redirectUrl);
+            result = authResult;
             var data = {};
             var user = result.user;
 
@@ -116,12 +128,14 @@
             var secret = result.credential.secret;
 
             var pvdata = user.providerData;
-            var discordId = localStorage.getItem("discordId");
+
+            var discordId = "{{discordId}}";
+            var mode = "{{mode}}";
             if (!discordId) {
               window.location.href = window.location.origin;
             }
             console.log(token);
-
+            console.log(mode);
             console.log(secret);
             console.log(discordId);
             console.log(user);
@@ -133,20 +147,160 @@
               user: JSON.stringify(pvdata),
             };
             post_to_url(
-              window.location.origin + "/tokenlogin?provider=twitter",
+              window.location.origin + "/tokenlogin?mode=" + mode,
               data
             );
             // ...
-          } else {
-            firebase.auth().signInWithRedirect(provider);
-            document.write("redirecting...");
+
+            return false;
+          },
+        },
+      };
+      ui.start("#firebaseui-auth-container", Options);
+      */
+
+      /*
+        firebase
+          .auth()
+          .getRedirectResult()
+          .then(function (result) {
+            if (result.credential) {
+              // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+              // You can use these server side with your app's credentials to access the Twitter API.
+              var data = {};
+              var user = result.user;
+
+              var token = result.credential.accessToken;
+
+              var secret = result.credential.secret;
+
+              var pvdata = user.providerData;
+              var discordId = localStorage.getItem("discordId");
+              var mode = localStorage.getItem("mode");
+              if (!discordId) {
+                window.location.href = window.location.origin;
+              }
+              console.log(token);
+              console.log(mode);
+              console.log(secret);
+              console.log(discordId);
+              console.log(user);
+              console.log(pvdata[0]);
+              var data = {
+                token: token,
+                secret: secret,
+                discordId: discordId,
+                user: JSON.stringify(pvdata),
+              };
+              post_to_url(
+                window.location.origin + "/tokenlogin?mode=" + mode,
+                data
+              );
+              // ...
+            } else {
+              firebase.auth().signInWithRedirect(provider);
+              document.write("redirecting...");
+            }
+            // The signed-in user info.
+          })
+          .catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+          });
+          */
+    </script>
+    <style>
+      .loginbox {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        z-index: 15;
+        top: 50%;
+        left: 50%;
+        margin: -100px 0 0 -150px;
+      }
+    </style>
+    <!--div class="loader"></div>
+    <div class="center">로그인하는중..</div-->
+    <div class="loader"></div>
+    <div class="center">로그인하는중..</div>
+    <div id="log"></div>
+    <script>
+      var log = document.getElementById("log");
+      var userAgent = navigator.userAgent.toLowerCase();
+      var browser;
+
+      if (userAgent.indexOf("chrome") > -1) {
+        browser = "크롬";
+      } else if (userAgent.indexOf("firefox") > -1) {
+        browser = "파이어폭스";
+      } else if (userAgent.indexOf("android") > -1) {
+        browser = "안드로이드";
+      } else if (userAgent.indexOf("safari") > -1) {
+        browser = "사파리";
+        log.innerHTML =
+          "아이폰을 사용중인것 같아요! 기본 브라우저가 아닐경우 오류가 납니다!<br>디스코드 내 브라우저를 사용하고 있다면, 오른쪽 밑의 사파리 버튼을 눌러 기본 브라우저로 열어주세요!";
+      }
+
+      //      log.innerHTML = navigator.userAgent;
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(function (result) {
+          console.log(result);
+          if (result.credential) {
+            // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+            // You can use these server side with your app's credentials to access the Twitter API.
+            var data = {};
+            var user = result.user;
+
+            var token = result.credential.accessToken;
+
+            var secret = result.credential.secret;
+
+            var pvdata = user.providerData;
+            var discordId = "{{discordId}}";
+            var mode = "{{mode}}";
+            if (!discordId) {
+              window.location.href = window.location.origin;
+            }
+            console.log(token);
+            console.log(mode);
+            console.log(secret);
+            console.log(discordId);
+            console.log(user);
+            console.log(pvdata[0]);
+            var data = {
+              token: token,
+              secret: secret,
+              discordId: discordId,
+              user: JSON.stringify(pvdata),
+            };
+            post_to_url(
+              window.location.origin + "/tokenlogin?mode=" + mode,
+              data
+            );
+            // ...
           }
-          // The signed-in user info.
         })
         .catch(function (error) {
           // Handle Errors here.
           var errorCode = error.code;
+
           var errorMessage = error.message;
+
+          log.innerHTML =
+            errorMessage +
+            "<br>로그인에 실패하였습니다. <br>팝업을 허용하고, 기본 브라우저로 열어보세요!";
+          console.log(error);
+          console.log(errorMessage);
+
           // The email of the user's account used.
           var email = error.email;
           // The firebase.auth.AuthCredential type that was used.
@@ -154,7 +308,5 @@
           // ...
         });
     </script>
-    <div class="loader"></div>
-    <div class="center">로그인하는중..</div>
   </body>
 </html>
