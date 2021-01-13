@@ -6,7 +6,9 @@ import asyncio
 import sys
 import config
 import importlib
-
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 class EventsCog(commands.Cog):
     def __init__(self, bot):
         importlib.reload(config)
@@ -26,19 +28,19 @@ class EventsCog(commands.Cog):
         hi_embed.set_thumbnail(url=f"{str(member.avatar_url)}")
         hi_embed.add_field(name='유저태그', value=f'{member}', inline=False)
         hi_embed.add_field(name='계정 생성일', value=f'{str(member.created_at + KST)[:-10]}', inline=False)
-        hi_embed.add_field(name='**안내**', value=f'개인 메세지(DM)으로 전송된 인증링크를 통해 인증해주세요!', inline=False)
+        hi_embed.add_field(name='**안내**', value=f'개인 메세지(DM)으로 전송된 가입링크를 통해 인증해주세요!', inline=False)
         hi_embed.set_footer(text="꼭 #신입공지를 읽어주세요!")
         await hello_channel.send(member.mention, embed=hi_embed)
         secret_embed = discord.Embed(
             color=0x7be53b,
-            title=f"{member}님의 고유 인증 링크",
-            description=f"[링크](https://{config.site_url}/login?discordId={member.id})",
+            title=f"{member}님의 고유 가입 링크",
+            description=f"[링크](https://{config.site_url}/login?discordId={member.id}&mode=register)",
             timestamp=timestamp
             )
         try:
             await member.send(embed=secret_embed)
         except:
-            await hello_channel.send(f'이 유저는 개인DM을 막아두어서 유저 인증 고유 링크를 보내지 못하였습니다.\n {member.mention}님은 DM을 열어주시고, 관리자 분들은 `a.인증링크 @유저멘션` 명령어를 통해 다시 DM 전송을 시도해 주세요')
+            await hello_channel.send(f'이 유저는 개인DM을 막아두어서 유저 가입 고유 링크를 보내지 못하였습니다.\n {member.mention}님은 DM을 열어주시고, 관리자 분들은 `a.가입링크 @유저멘션` 명령어를 통해 다시 DM 전송을 시도해 주세요')
 
     @commands.Cog.listener('on_member_remove')
     async def member_leave(self, member: discord.Member):
