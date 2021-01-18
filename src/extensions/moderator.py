@@ -9,6 +9,7 @@ import importlib
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import extensions.admin
 class ModeratorCog(commands.Cog):
     def __init__(self, bot):
         importlib.reload(config)
@@ -49,6 +50,25 @@ class ModeratorCog(commands.Cog):
             await ctx.send("해당 유저의 개인 DM 으로 가입 링크를 전송하였습니다!")
         except:
             await ctx.send(f'이 유저는 개인DM을 막아두어서 유저 가입 고유 링크를 보내지 못하였습니다.\n {member.mention}님은 DM을 열어주시고, 관리자 분들은 `a.인증링크 @유저멘션` 명령어를 통해 다시 DM 전송을 시도해 주세요')
+
+
+    @commands.command(name="승인갯수변경")
+    async def change_approve_count(self, ctx, approve_count: int):
+        msg = await ctx.send("설정 변경중..")
+        f = open("src/config.py", 'r', encoding="utf8")
+        lines = []
+        for line in f.readlines():
+            if line.startswith("discord_agree_count"):
+                lines.append(f"discord_agree_count = {approve_count}\n")
+            else:
+                lines.append(line)
+        f = open("src/config.py", "w", encoding="utf8")
+        f.writelines(lines)
+        for path in config.extension_list:
+                await msg.edit(content=f"{path} 모듈을 리로드 하는중...")
+                self.bot.reload_extension(path)
+        await msg.edit(content=f"모듈 리로드 성공")
+        
 
 
 def setup(bot):
