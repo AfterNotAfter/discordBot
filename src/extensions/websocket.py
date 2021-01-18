@@ -91,9 +91,10 @@ class ApiSocketCog(commands.Cog):
             await member.add_roles(user_role,reason="기존유저")
     async def send_message(self, data):
         verify_channel = self.bot.get_channel(config.discord_verify_channel)
-        
-        print(f"https://twitter.com/{data['usertag'].replace('@','')}")
-        a = await utils.web.async_screenshot(f"https://twitter.com/{data['usertag'].replace('@','')}")
+        url=f"https://twitter.com/{data['usertag'].replace('@','')}"
+        print(url)
+        self.logger.info(f"{url} <- 스크린샷")
+        a = await utils.web.async_screenshot(url)
         msg = await verify_channel.send(f"@everyone\n\n<@{data['discordId']}> 님의 트위터 아이디는 {data['usertag']} 입니다.\n찬성하시는 분은 :+1: 반대하시는분은 :x: 이모지를 달아주세요.", file=discord.File(a, "screenshot.png"))
         print(msg)
         await msg.add_reaction("👍")
