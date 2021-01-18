@@ -32,7 +32,7 @@ class Webserver():
         app.config['JSON_AS_ASCII'] = False
         Session(app)
         app.static('/assets', './assets')
-        self.templateEnv = jinja2.Environment( loader=jinja2.FileSystemLoader('templates/'))
+        self.templateEnv = jinja2.Environment( loader=jinja2.FileSystemLoader('websrc/'))
         
         @app.route('/')
         async def route_root(request):
