@@ -19,12 +19,13 @@ class DiscordBot(commands.Bot):
 
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user}")
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="신입심사대"))
 
     async def on_error(self, event, *args, **kwargs):
         self.logger.exception("")
 
     def __init__(self, logger,intents):
-        super().__init__(commands.when_mentioned_or("a."),intents=intents)
+        super().__init__(commands.when_mentioned_or("a."),intents=intents,help_command=None)
         self.logger = logger
         
         for ext in self.extension_list:
