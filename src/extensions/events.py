@@ -60,6 +60,7 @@ class EventsCog(commands.Cog):
 
     @commands.Cog.listener('on_raw_reaction_add')
     async def reaction_add(self, payload):
+        
         channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
         log_channel = self.bot.get_channel(config.discord_log_channel)
@@ -79,27 +80,33 @@ class EventsCog(commands.Cog):
                     await log_channel.send(f"{payload.member.mention} 님이 👍으로 {member.mention} 님의 가입에 동의하셨습니다.")
                 if is_x:
                     await log_channel.send(f"{payload.member.mention} 님이 ❌으로 {member.mention} 님의 가입에 반대하셨습니다.")
-
+                print(thumbsup_reaction.count)
+                print(thumbsup_reaction.count >= config.discord_agree_count)
                 if thumbsup_reaction.count >= config.discord_agree_count:
                     agreed_users = []
                     agreed_users_mention =""
                     async for user in thumbsup_reaction.users():
-                        if not user == self.bot.me:
+                        if not user == message.guild.me:
                             agreed_users.append(user)
                             agreed_users_mention += f"{user.mention} "
 
                     disagreed_users = []
                     disagreed_users_mention =""
                     async for user in x_reaction.users():
-                        if not user == self.bot.me:
+                        if not user == message.guild.me:
                             disagreed_users.append(user)
                             disagreed_users_mention += f"{user.mention} "
 
                     if x_reaction.count < 2:
                         await log_channel.send(f"{member.mention}님의 가입을 승인하였습니다!\n 동의자 목록: {agreed_users_mention}")
-                        await member.add_roles(user_role,reason="자동 가입 승인.")
+                        await member.add_roles(user_role, reason="자동 가입 승인.")
+                        await message.edit(content=str(message.content)+"\n가입 승인됨!")
+                        await message.clear_reactions()
                     else:
                         await log_channel.send(f"비동의자가 있기 때문에, {member.mention}님의 가입을 승인하지 않았습니다.\n 동의자 목록: {agreed_users_mention}\n\n 비동의자 목록: {disagreed_users_mention}")
+                        await message.edit(content=str(message.content)+"\n가입 거부됨!")
+                        
+                        
 
         else:
             return
