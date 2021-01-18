@@ -33,7 +33,7 @@ async def async_screenshot(url):
     async with arsenic.get_session(service, browser) as session:
         await session.set_window_size(600,1000)
         await session.get(url)
-        await asyncio.sleep(2)
+        await asyncio.sleep(4)
         a=await session.get_screenshot()
         
     print("finish")
