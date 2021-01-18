@@ -19,9 +19,7 @@ class UserCog(commands.Cog):
             app = firebase_admin.get_app()
         except ValueError as e:
             cred = credentials.Certificate('./cert/firebasecert.json')
-            firebase_admin.initialize_app(cred, {
-                'databaseURL': 'https://leobot-9fbb1.firebaseio.com/'
-        })
+            firebase_admin.initialize_app(cred)
         
         self.db = firestore.client()
         self.bot = bot
@@ -64,7 +62,7 @@ class UserCog(commands.Cog):
         embed.add_field(name="\n성향", value=f"{data['introduce']['tend']}\n　")
         embed.add_field(name="\n연령대", value=f"{data['introduce']['age']}\n　")
         await ctx.send(embed=embed)
-    @commands.command(name="로그인")
+    @commands.command()
     async def funcname(self, ctx):
         timestamp = datetime.datetime.utcnow()
         KST = datetime.timedelta(hours=9)
@@ -79,7 +77,19 @@ class UserCog(commands.Cog):
         )
         await ctx.author.send(embed=embed)
         await ctx.send(f"{ctx.author.mention} 개인DM으로 전송된 링크를 통해 로그인하세요.")
-        
+    @commands.command(name="도움말")
+    async def help_command(self, ctx):
+        text = """```
+유저:
+    a.정보 (유저이름/멘션)
+    a.정보수정 (본인만)
+관리자:
+    a.강제승인 (유저이름/멘션)
+    a.가입링크 (유저이름/멘션)
+    a.정보수정 (유저이름/멘션)
+    a.승인갯수변경 숫자
+```"""
+        await ctx.send(text)
     @commands.command(name="정보수정")
     async def register_info(self, ctx, member: Optional[discord.Member]):
         if not member:
