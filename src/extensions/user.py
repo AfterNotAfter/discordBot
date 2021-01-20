@@ -88,6 +88,15 @@ class UserCog(commands.Cog):
     a.가입링크 (유저이름/멘션)
     a.정보수정 (유저이름/멘션)
     a.승인갯수변경 숫자
+음악:
+    a.[입장,연결,join]
+    a.[나가,연결끊기,stop]
+    a.[재생,play] 음악제목
+    a.[스킵,skip]
+    a.[볼륨,volume] 1~10
+    a.[지금,np]
+    a.[큐,q]
+    a.[자동재생,autoplay] [on, off]
 ```"""
         await ctx.send(text)
     @commands.command(name="정보수정")
