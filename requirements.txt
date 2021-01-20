@@ -29,3 +29,4 @@ sanic_session
 jinja2
 PyJwt
 selenium
+discodo
