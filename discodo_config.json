@@ -1,0 +1,18 @@
+{
+  "HOST": "0.0.0.0",
+  "PORT": 8000,
+  "PASSWORD": "hellodiscodo",
+  "HANDSHAKE_INTERVAL": 15,
+  "HANDSHAKE_TIMEOUT": 60,
+  "IPBLOCKS": [],
+  "EXCLUDEIPS": [],
+  "DEFAULT_AUTOPLAY": true,
+  "DEFAULT_VOLUME": 0.15,
+  "DEFAULT_CROSSFADE": 3,
+  "BUFFERLIMIT": 10,
+  "PRELOAD_TIME": 30,
+  "VCTIMEOUT": 300,
+  "ENABLED_EXT_RESOLVER": ["melon", "spotify"],
+  "SPOTIFY_ID": null,
+  "SPOTIFY_SECRET": null
+}
